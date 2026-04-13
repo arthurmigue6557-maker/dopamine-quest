@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description"
+        content="Dopamine Quest - Transforme suas metas em um jogo viciante de produtividade. Caixas surpresa, barra de progresso e sensação de crescimento real.">
+    <meta name="keywords" content="produtividade, gamificação, dopamina, foco, estudo, metas">
+    <meta name="author" content="Dopamine Quest">
+    <meta name="theme-color" content="#1E1B2E">
+    <title>Dopamine Quest | Produtividade com recompensas viciantes</title>
+
+    <!-- SEO Schema -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Dopamine Quest",
+    "description": "App de produtividade gamificada com caixas surpresa e barra de progresso",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "BRL"
+    }
+  }
+  </script>
+
+    <!-- Bootstrap 5 + Tailwind + Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="css/tailwind.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Ícone em svg + tamanhos diferentes -->
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="assets/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DopamineQuest">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1E1B2E">
+    <meta name="msapplication-TileColor" content="#1E1B2E">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-144x144.png">
+
+    <!-- iOS specific -->
+    <link rel="apple-touch-startup-image" href="/assets/icons/icon-512x512.png">
+
+    <style>
+        /* Ajustes finos de coesão visual */
+        body {
+            background: linear-gradient(145deg, #F9F7F3 0%, #EFEBE4 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .card-glass {
+            backdrop-filter: blur(2px);
+            background: rgba(255, 255, 245, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 2rem;
+        }
+
+        .surprise-box {
+            transition: all 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+
+        .surprise-box:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+        <!-- Header com nível de progresso -->
+        <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-brain text-4xl text-indigo-700"></i>
+                <h1
+                    class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-800 to-purple-800 bg-clip-text text-transparent">
+                    Dopamine Quest</h1>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white/70 rounded-full px-4 py-2 shadow-sm">
+                    <i class="fas fa-trophy text-amber-500 mr-2"></i>
+                    <span id="levelDisplay" class="font-bold">Nível 1</span>
+                </div>
+                <div class="bg-white/70 rounded-full px-4 py-2 shadow-sm">
+                    <i class="fas fa-gem text-rose-500 mr-2"></i>
+                    <span id="pointsDisplay" class="font-mono">0 pts</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid principal: lado esquerdo meta e timer, lado direito caixas -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- COLUNA PRINCIPAL (2/3) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Card da meta -->
+                <div class="card-glass p-6 shadow-xl">
+                    <label class="block text-sm font-semibold text-gray-600 uppercase tracking-wide">⚡ Sua missão de
+                        hoje</label>
+                    <div class="flex flex-col sm:flex-row gap-3 mt-2">
+                        <input type="text" id="goalInput" placeholder="Ex: Estudar React, Meditar, Programar 1h..."
+                            class="flex-1 p-4 border-0 rounded-2xl bg-white/80 focus:ring-2 focus:ring-indigo-400 text-lg">
+                        <button id="setGoalBtn"
+                            class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold py-3 px-6 rounded-2xl transition flex items-center justify-center gap-2">
+                            <i class="fas fa-play"></i> Iniciar Jornada
+                        </button>
+                    </div>
+                    <div id="currentGoalDisplay" class="mt-4 text-center p-3 bg-indigo-50 rounded-xl hidden">
+                        <i class="fas fa-flag-checkered text-indigo-600"></i> Meta atual: <strong
+                            id="goalText"></strong>
+                    </div>
+                </div>
+
+                <!-- Timer com sensação de progresso -->
+                <div class="card-glass p-6 text-center">
+                    <div class="text-7xl font-mono font-bold tracking-wider" id="timer">25:00</div>
+                    <input type="range" id="focusSlider" min="1" max="60" value="25"
+                        class="w-full mt-4 accent-indigo-600">
+                    <div class="flex justify-center gap-4 mt-4">
+                        <button id="startTimerBtn"
+                            class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full flex items-center gap-2"><i
+                                class="fas fa-play"></i> Foco</button>
+                        <button id="pauseTimerBtn"
+                            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-full"><i
+                                class="fas fa-pause"></i></button>
+                        <button id="resetTimerBtn"
+                            class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-full"><i
+                                class="fas fa-undo-alt"></i></button>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500">🎧 Estude com foco total. Complete o ciclo para ganhar sua
+                        caixa surpresa!</div>
+                </div>
+
+                <!-- Barra de progresso de hoje -->
+                <div class="card-glass p-4">
+                    <div class="flex justify-between text-sm mb-1"><span>Progresso diário</span><span
+                            id="dailyProgressPercent">0%</span></div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div id="dailyProgressBar"
+                            class="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-500"
+                            style="width:0%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Cada ciclo concluído = +10xp e uma caixa surpresa</p>
+                </div>
+            </div>
+
+            <!-- COLUNA DAS CAIXAS SURPRESA (1/3) -->
+            <div class="space-y-6">
+                <div class="card-glass p-5 text-center">
+                    <h2 class="text-2xl font-bold flex items-center justify-center gap-2"><i
+                            class="fas fa-gift text-pink-500"></i> Caixas Surpresa</h2>
+                    <p class="text-sm text-gray-600 mb-4">Conclua um timer e desbloqueie uma caixa</p>
+                    <div id="surpriseBoxContainer" class="flex flex-col gap-3">
+                        <!-- caixas serão inseridas via js -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center text-gray-400">
+                            <i class="fas fa-box-open text-4xl mb-2"></i>
+                            <p>Nenhuma caixa disponível ainda.<br>Complete seu primeiro ciclo!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ranking rápido de sensação de progresso -->
+                <div class="card-glass p-4 text-center">
+                    <i class="fas fa-chart-line text-indigo-400 text-xl"></i>
+                    <p class="text-xs mt-1">🔥 Sequência: <span id="streakCount">0</span> dias</p>
+                    <button id="resetGameBtn" class="text-red-400 text-xs mt-2 underline">resetar progresso</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer com links legais -->
+        <footer
+            class="mt-16 pt-8 border-t border-gray-300 text-center text-sm text-gray-500 flex flex-wrap justify-center gap-6">
+            <a href="about.html" class="hover:text-indigo-700">Sobre o método</a>
+            <a href="privacy.html" class="hover:text-indigo-700">Política de Privacidade</a>
+            <a href="terms.html" class="hover:text-indigo-700">Termos de Serviço</a>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/surprise.js"></script>
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registrado!', reg))
+                    .catch(err => console.log('Erro no SW:', err));
+            });
+        }
+
+        // Verificar se pode instalar PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Mostrar botão de instalação
+            const installBtn = document.createElement('button');
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Instalar App';
+            installBtn.className = 'fixed bottom-4 right-4 bg-indigo-600 text-white px-4 py-2 rounded-full shadow-lg z-50 animate-bounce';
+            installBtn.onclick = () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    installBtn.remove();
+                    deferredPrompt = null;
+                });
+            };
+            document.body.appendChild(installBtn);
+        });
+    </script>
+</body>
+
+</html>
